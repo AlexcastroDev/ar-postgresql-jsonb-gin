@@ -84,14 +84,13 @@ and the result is:
 
 | Step | Operation                                      | Details                                                                                          | Cost Range       | Actual Time (ms) | Rows | Loops |
 |------|------------------------------------------------|--------------------------------------------------------------------------------------------------|------------------|------------------|------|-------|
-| 1    | Bitmap Heap Scan on users                      | Cost: 40.04..59.13, Rows: 5, Width: 160                                                          | 40.04..59.13     | 0.416..0.419     | 1    | 1     |
+| 1    | Bitmap Heap Scan on users                      | Cost: 40.04..59.13, Rows: 5, Width: 160                                                          | 40.04..59.13     | 0.345..0.346     | 0    | 1     |
 |      | Recheck Condition                              | `(thirdparty_infos @> '{"identities": [{"uuid": "656ff884-99e8-4624-95d4-50d3952d2c38"}]}'::jsonb)` |                  |                  |      |       |
-|      | Heap Blocks                                    | exact=1                                                                                          |                  |                  |      |       |
-| 2    | Bitmap Index Scan on idx_users_on_thirdparty_infos_identities | Cost: 0.00..40.04, Rows: 5, Width: 0                                                               | 0.00..40.04      | 0.364..0.365     | 1    | 1     |
+| 2    | Bitmap Index Scan on index_users_on_thirdparty_infos | Cost: 0.00..40.04, Rows: 5, Width: 0                                                               | 0.00..40.04      | 0.337..0.338     | 0    | 1     |
 |      | Index Condition                                | `(thirdparty_infos @> '{"identities": [{"uuid": "656ff884-99e8-4624-95d4-50d3952d2c38"}]}'::jsonb)` |                  |                  |      |       |
 |      |                                                |                                                                                                  |                  |                  |      |       |
-|      | **Planning Time**                              |                                                                                                  |                  | 0.481            |      |       |
-|      | **Execution Time**                             |                                                                                                  |                  | 0.526            |      |       |
+|      | **Planning Time**                              |                                                                                                  |                  | 0.688            |      |       |
+|      | **Execution Time**                             |                                                                                                  |                  | 0.495            |      |       |
 
 
 ### Perform 100 entries
