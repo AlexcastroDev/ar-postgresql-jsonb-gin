@@ -5,7 +5,7 @@ require 'pg'
 
 class ThirdParty
   def self.get_infos
-    { name: Faker::Name.name, identities: [ { email: "does not matter", uuid: Faker::Internet.uuid } ] }
+    { name: Faker::Name.name, identities: rand(1..4).times.map { { email: Faker::Internet.email, uuid: Faker::Internet.uuid } } }
   end
 end
 
@@ -44,7 +44,7 @@ task :import_csv do
 
   # Inject custom UUID
   random_index = rand(users.length)
-  custom_infos = { name: Faker::Name.name, identities: [ { email: "does not matter", uuid: "itachiuchihadekonoha" } ] }
+  custom_infos = { name: Faker::Name.name, identities: [ { email: "does not matter", uuid: "itachiuchihadekonoha" }, { email: "does not matter", uuid: "notmatter" } ] }
   user = User.find(random_index)
   user.update_columns(thirdparty_infos: custom_infos, full_name: "renegado")
   
