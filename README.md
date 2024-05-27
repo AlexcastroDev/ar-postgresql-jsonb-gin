@@ -84,13 +84,14 @@ and the result is:
 
 | Step | Operation                                      | Details                                                                                          | Cost Range       | Actual Time (ms) | Rows | Loops |
 |------|------------------------------------------------|--------------------------------------------------------------------------------------------------|------------------|------------------|------|-------|
-| 1    | Bitmap Heap Scan on users                      | Cost: 40.04..59.13, Rows: 5, Width: 160                                                          | 40.04..59.13     | 0.345..0.346     | 0    | 1     |
-|      | Recheck Condition                              | `(thirdparty_infos @> '{"identities": [{"uuid": "656ff884-99e8-4624-95d4-50d3952d2c38"}]}'::jsonb)` |                  |                  |      |       |
-| 2    | Bitmap Index Scan on index_users_on_thirdparty_infos | Cost: 0.00..40.04, Rows: 5, Width: 0                                                               | 0.00..40.04      | 0.337..0.338     | 0    | 1     |
-|      | Index Condition                                | `(thirdparty_infos @> '{"identities": [{"uuid": "656ff884-99e8-4624-95d4-50d3952d2c38"}]}'::jsonb)` |                  |                  |      |       |
+| 1    | Bitmap Heap Scan on users                      | Cost: 40.04..59.13, Rows: 5, Width: 160                                                          | 40.04..59.13     | 0.504..0.508     | 1    | 1     |
+|      | Recheck Condition                              | `(thirdparty_infos @> '{"identities": [{"uuid": "fb4813db-686b-418b-84d5-9b6ec45e77b5"}]}'::jsonb)` |                  |                  |      |       |
+|      | Heap Blocks                                    | exact=1                                                                                          |                  |                  |      |       |
+| 2    | Bitmap Index Scan on index_users_on_thirdparty_infos | Cost: 0.00..40.04, Rows: 5, Width: 0                                                               | 0.00..40.04      | 0.468..0.469     | 1    | 1     |
+|      | Index Condition                                | `(thirdparty_infos @> '{"identities": [{"uuid": "fb4813db-686b-418b-84d5-9b6ec45e77b5"}]}'::jsonb)` |                  |                  |      |       |
 |      |                                                |                                                                                                  |                  |                  |      |       |
-|      | **Planning Time**                              |                                                                                                  |                  | 0.688            |      |       |
-|      | **Execution Time**                             |                                                                                                  |                  | 0.495            |      |       |
+|      | **Planning Time**                              |                                                                                                  |                  | 0.638            |      |       |
+|      | **Execution Time**                             |                                                                                                  |                  | 0.856            |      |       |
 
 
 ### Perform 100 entries
