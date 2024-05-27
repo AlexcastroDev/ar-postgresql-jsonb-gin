@@ -16,6 +16,7 @@ The results are shown for two different dataset sizes: 100 entries and 50,000 en
 | Index in Separate Column                | 5.002k            | 277.447              |
 | Index in Existing Column                | 2.290k            | 9.525                |
 | Index in Existing Column second try     | 4.105k            | 95.707               |
+| Index in Existing Column third try      | 4.114k            | 98.061               |
 
 # Current situation (Without index)
 
@@ -115,6 +116,33 @@ test-1  |         find_by_uuid     9.000 i/100ms
 test-1  | Calculating -------------------------------------
 test-1  |         find_by_uuid     95.707 (±10.4%) i/s -    477.000 in   5.058234s
 ```
+
+-------------------
+
+In the same line, I will attempt to infer an array of strings before saving it to the User Model. Additionally, I will try to locate the necessary values within the array rather than mapping identities.
+
+### Perform 100 entries
+
+```bash
+test-1  | Running Ruby application...
+test-1  | ruby 3.3.1 (2024-04-23 revision c56cd86388) [aarch64-linux]
+test-1  | Warming up --------------------------------------
+test-1  |         find_by_uuid   478.000 i/100ms
+test-1  | Calculating -------------------------------------
+test-1  |         find_by_uuid      4.114k (±18.0%) i/s -     18.642k in   5.117524s
+```
+
+### Perform 50.000 entries
+
+```bash
+test-1  | Running Ruby application...
+test-1  | ruby 3.3.1 (2024-04-23 revision c56cd86388) [aarch64-linux]
+test-1  | Warming up --------------------------------------
+test-1  |         find_by_uuid     8.000 i/100ms
+test-1  | Calculating -------------------------------------
+test-1  |         find_by_uuid     98.061 (±26.5%) i/s -    408.000 in   5.083929s
+```
+
 
 # Alternative 2: Adding index in a existent column
 

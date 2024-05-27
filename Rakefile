@@ -46,7 +46,7 @@ task :import_csv do
   random_index = rand(users.length)
   custom_infos = { name: Faker::Name.name, identities: [ { email: "does not matter", uuid: "itachiuchihadekonoha" }, { email: "does not matter", uuid: "notmatter" } ] }
   user = User.find(random_index)
-  user.update_columns(thirdparty_infos: custom_infos, full_name: "renegado")
+  user.update(thirdparty_infos: custom_infos, full_name: "renegado")
   
   puts "Inject user with uuid: itachiuchihadekonoha at index #{random_index}"
 end
