@@ -17,11 +17,10 @@ task :migrate do
     create_table :users, force: true do |t|
       t.string :full_name
       t.jsonb :thirdparty_infos, default: {}, null: false
-      
-      # t.index "thirdparty_infos", using: :gin
-      # t.index "thirdparty_infos", using: :btree
-      t.index "thirdparty_infos", using: :hash
     end
+    
+    # CREATE INDEX idx_thirdparty_infos_users_uuids ON users USING GIN ((thirdparty_infos->'users_uuids') jsonb_path_ops);
+    add_index :users, "((thirdparty_infos->'user_uuids')) jsonb_path_ops", using: :gin, name: "idx_thirdparty_infos_users_uuids"        
   end
 end
 

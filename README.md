@@ -2,11 +2,15 @@
 
 # Summary
 
-This summary presents the performance benchmarks for finding entries by UUID under three different scenarios: 
+This summary presents the performance benchmarks for finding entries by UUID under three different scenarios
 
-- without an index 
-- with an index on a separate column
-- with an index on an existing column
+For my use case, the better one was:
+
+| Operation           | Iterations/100ms | Calculations/sec (i/s) | Total in 5s    |
+|---------------------|------------------|------------------------|----------------|
+| find_by_uuid (Task) | 349              | 4.344k (±10.5%)        | 21.638k        |
+| find_by_uuid (50k)  | 11               | 121.315 (±8.2%)        | 605.000        |
+
 
 The results are shown for two different dataset sizes: 100 entries and 50,000 entries.
 

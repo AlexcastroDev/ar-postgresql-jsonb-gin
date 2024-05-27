@@ -17,8 +17,9 @@ class User < ActiveRecord::Base
   end
 
   def self.find_by_uuid(uuid)
-    # SELECT * FROM users WHERE thirdparty_infos -> 'user_uuids' @> '["787e7fe5-e08f-4fd1-a761-a854ce41caa5"]';    
-    u = User.find_by("thirdparty_infos -> 'user_uuids' @> ?", "[\"#{uuid}\"]")
+    # SELECT * FROM users 
+    # WHERE thirdparty_infos->'user_uuids' @> '["2556d47e-8123-4091-bba0-55450652c503"]'::jsonb;
+    u = User.find_by("thirdparty_infos->'user_uuids' @> ?", "[\"#{uuid}\"]")
 
     # for debugging
     raise "User not found" if u.nil?
