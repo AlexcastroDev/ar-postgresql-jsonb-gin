@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:14.7-alpine
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: "trust"
+      POSTGRES_DB: "test"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "test"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+    networks:
+      - lekito
+  test:
+    build: .
+    volumes:
+      - .:/app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: "database"
+      DB_NAME: "test"
+    networks:
+      - lekito
+    working_dir: /app
+    command: ./seed.sh
+
+networks:
+  lekito:
+    driver: bridge
