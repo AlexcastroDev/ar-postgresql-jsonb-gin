@@ -18,7 +18,8 @@ task :migrate do
       t.string :full_name
       t.jsonb :thirdparty_infos, default: {}, null: false
       
-      t.index "thirdparty_infos", using: :gin
+      # t.index "thirdparty_infos", using: :gin
+      t.index "thirdparty_infos", using: :hash
     end
   end
 end

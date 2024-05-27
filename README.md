@@ -17,6 +17,8 @@ The results are shown for two different dataset sizes: 100 entries and 50,000 en
 | Index in Existing Column                | 2.290k            | 9.525                |
 | Index in Existing Column second try     | 4.105k            | 95.707               |
 | Index in Existing Column third try      | 4.114k            | 98.061               |
+| Using Hash                              | 1.881k            | 9.253                |
+| Using Hash Infering Array               | 4.416k            | 125.192              |
 
 # Current situation (Without index)
 
@@ -167,6 +169,55 @@ test-1  |         find_by_uuid     1.000 i/100ms
 test-1  | Calculating -------------------------------------
 test-1  |         find_by_uuid      9.525 (±10.5%) i/s -     47.000 in   5.012350s
 ```
+
+# Alternative 2: Use Hash instead GIN
+
+### Perform 100 entries
+
+```bash
+test-1  | Running Ruby application...
+test-1  | ruby 3.3.1 (2024-04-23 revision c56cd86388) [aarch64-linux]
+test-1  | Warming up --------------------------------------
+test-1  |         find_by_uuid   214.000 i/100ms
+test-1  | Calculating -------------------------------------
+test-1  |         find_by_uuid      1.881k (±31.1%) i/s -      7.918k in   5.010515s
+```
+
+### Perform 50.000 entries
+```bash
+test-1  | Running Ruby application...
+test-1  | ruby 3.3.1 (2024-04-23 revision c56cd86388) [aarch64-linux]
+test-1  | Warming up --------------------------------------
+test-1  |         find_by_uuid     1.000 i/100ms
+test-1  | Calculating -------------------------------------
+test-1  |         find_by_uuid      9.253 (± 0.0%) i/s -     47.000 in   5.094357s
+```
+
+---------------
+
+Now, infering an array of strings before saving it to the User Model
+
+```bash
+### Perform 100 entries
+test-1  | Running Ruby application...
+test-1  | ruby 3.3.1 (2024-04-23 revision c56cd86388) [aarch64-linux]
+test-1  | Warming up --------------------------------------
+test-1  |         find_by_uuid   351.000 i/100ms
+test-1  | Calculating -------------------------------------
+test-1  |         find_by_uuid      4.416k (±11.6%) i/s -     21.762k in   5.037456s
+```
+
+### Perform 50.000 entries
+
+```bash
+test-1  | Running Ruby application...
+test-1  | ruby 3.3.1 (2024-04-23 revision c56cd86388) [aarch64-linux]
+test-1  | Warming up --------------------------------------
+test-1  |         find_by_uuid    12.000 i/100ms
+test-1  | Calculating -------------------------------------
+test-1  |         find_by_uuid    125.192 (± 5.6%) i/s -    624.000 in   5.002306s
+```
+
 
 # How to run
 
