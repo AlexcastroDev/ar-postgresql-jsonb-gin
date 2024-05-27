@@ -17,8 +17,10 @@ The results are shown for two different dataset sizes: 100 entries and 50,000 en
 | Index in Existing Column                | 2.290k            | 9.525                |
 | Index in Existing Column second try     | 4.105k            | 95.707               |
 | Index in Existing Column third try      | 4.114k            | 98.061               |
-| Using Hash                              | 1.881k            | 9.253                |
-| Using Hash Infering Array               | 4.416k            | 125.192              |
+| Using Hash                              | 4.416k            | 125.192              |
+| Hash without inferring                  | 1.881k            | 9.253                |
+| Using B-tree                            | 4.214k            | 99.476               |
+
 
 # Current situation (Without index)
 
@@ -216,6 +218,29 @@ test-1  | Warming up --------------------------------------
 test-1  |         find_by_uuid    12.000 i/100ms
 test-1  | Calculating -------------------------------------
 test-1  |         find_by_uuid    125.192 (± 5.6%) i/s -    624.000 in   5.002306s
+```
+
+# Alternative 2: Use BTREE
+
+### Perform 100 entries
+
+```bash
+test-1  | Running Ruby application...
+test-1  | ruby 3.3.1 (2024-04-23 revision c56cd86388) [aarch64-linux]
+test-1  | Warming up --------------------------------------
+test-1  |         find_by_uuid   362.000 i/100ms
+test-1  | Calculating -------------------------------------
+test-1  |         find_by_uuid      4.214k (±11.6%) i/s -     20.996k in   5.080634s
+```
+
+### Perform 50.000 entries
+```bash
+test-1  | Running Ruby application...
+test-1  | ruby 3.3.1 (2024-04-23 revision c56cd86388) [aarch64-linux]
+test-1  | Warming up --------------------------------------
+test-1  |         find_by_uuid     9.000 i/100ms
+test-1  | Calculating -------------------------------------
+test-1  |         find_by_uuid     99.476 (± 7.0%) i/s -    504.000 in   5.092611s
 ```
 
 
