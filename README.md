@@ -175,4 +175,9 @@ docker compose up test
 ```
 
 # References
-# https://scalegrid.io/blog/using-jsonb-in-postgresql-how-to-effectively-store-index-json-data-in-postgresql/
+
+[Using JSONB in PostgreSQL®: How to Effectively Store & Index JSON Data in PostgreSQL](https://scalegrid.io/blog/using-jsonb-in-postgresql-how-to-effectively-store-index-json-data-in-postgresql/)
+
+
+[Faster queries with index on JSONB columns in Postgres](https://www.youtube.com/watch?v=EwFjETYge9I)
+
