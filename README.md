@@ -10,12 +10,12 @@ This summary presents the performance benchmarks for finding entries by UUID und
 
 The results are shown for two different dataset sizes: 100 entries and 50,000 entries.
 
-| Scenario                | 100 Entries (i/s) | 50,000 Entries (i/s) |
-|-------------------------|-------------------|----------------------|
-| Without Index           | 1.310k            | 16.300               |
-| Index in Separate Column| 5.002k            | 277.447              |
-| Index in Existing Column| 2.290k            | 9.525                |
-
+| Scenario                                | 100 Entries (i/s) | 50,000 Entries (i/s) |
+|-----------------------------------------|-------------------|----------------------|
+| Without Index                           | 1.310k            | 16.300               |
+| Index in Separate Column                | 5.002k            | 277.447              |
+| Index in Existing Column                | 2.290k            | 9.525                |
+| Index in Existing Column second try     | 4.105k            | 95.707               |
 
 # Current situation (Without index)
 
@@ -65,6 +65,56 @@ test-1  | Calculating -------------------------------------
 test-1  |             find_by_uuid    277.447 (± 5.4%) i/s -      1.392k in   5.034088s
 ```
 
+improve it a little bit more, after start creating manual testing i got this:
+
+```sql
+CREATE INDEX idx_users_on_thirdparty_infos_identities_uuid ON users USING gin (thirdparty_infos);
+```
+
+And to be sure that this will work
+
+```sql
+EXPLAIN ANALYZE
+SELECT *
+FROM users
+WHERE thirdparty_infos @> '{"identities": [{"uuid": "656ff884-99e8-4624-95d4-50d3952d2c38"}]}';
+```
+
+and the result is:
+
+| Step | Operation                                      | Details                                                                                          | Cost Range       | Actual Time (ms) | Rows | Loops |
+|------|------------------------------------------------|--------------------------------------------------------------------------------------------------|------------------|------------------|------|-------|
+| 1    | Bitmap Heap Scan on users                      | Cost: 40.04..59.13, Rows: 5, Width: 160                                                          | 40.04..59.13     | 0.416..0.419     | 1    | 1     |
+|      | Recheck Condition                              | `(thirdparty_infos @> '{"identities": [{"uuid": "656ff884-99e8-4624-95d4-50d3952d2c38"}]}'::jsonb)` |                  |                  |      |       |
+|      | Heap Blocks                                    | exact=1                                                                                          |                  |                  |      |       |
+| 2    | Bitmap Index Scan on idx_users_on_thirdparty_infos_identities | Cost: 0.00..40.04, Rows: 5, Width: 0                                                               | 0.00..40.04      | 0.364..0.365     | 1    | 1     |
+|      | Index Condition                                | `(thirdparty_infos @> '{"identities": [{"uuid": "656ff884-99e8-4624-95d4-50d3952d2c38"}]}'::jsonb)` |                  |                  |      |       |
+|      |                                                |                                                                                                  |                  |                  |      |       |
+|      | **Planning Time**                              |                                                                                                  |                  | 0.481            |      |       |
+|      | **Execution Time**                             |                                                                                                  |                  | 0.526            |      |       |
+
+
+### Perform 100 entries
+
+```bash
+test-1  | Running Ruby application...
+test-1  | ruby 3.3.1 (2024-04-23 revision c56cd86388) [aarch64-linux]
+test-1  | Warming up --------------------------------------
+test-1  |         find_by_uuid   408.000 i/100ms
+test-1  | Calculating -------------------------------------
+test-1  |         find_by_uuid      4.105k (±11.0%) i/s -     20.400k in   5.051942s
+```
+
+### Perform 50.000 entries
+
+```bash
+test-1  | Running Ruby application...
+test-1  | ruby 3.3.1 (2024-04-23 revision c56cd86388) [aarch64-linux]
+test-1  | Warming up --------------------------------------
+test-1  |         find_by_uuid     9.000 i/100ms
+test-1  | Calculating -------------------------------------
+test-1  |         find_by_uuid     95.707 (±10.4%) i/s -    477.000 in   5.058234s
+```
 
 # Alternative 2: Adding index in a existent column
 

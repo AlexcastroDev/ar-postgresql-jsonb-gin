@@ -18,8 +18,7 @@ task :migrate do
       t.string :full_name
       t.jsonb :thirdparty_infos, default: {}, null: false
       
-      # thirdparty_infos->'identities' as identity WHERE identity->>'uuid' = ?
-      t.index "((thirdparty_infos -> 'identities' -> 'uuid'::text))", name: "index_users_on_thirdparty_infos_identities_uuid"
+      t.index "thirdparty_infos", using: :gin
     end
   end
 end

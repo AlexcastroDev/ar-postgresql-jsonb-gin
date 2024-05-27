@@ -11,13 +11,28 @@ ActiveRecord::Base.establish_connection(
 
 class User < ActiveRecord::Base
     def self.find_by_uuid(uuid)
-        self.where("EXISTS (
-            SELECT 1
-            FROM jsonb_array_elements(thirdparty_infos->'identities') as identity
-            WHERE identity->>'uuid' = ?
-          )", uuid).take
+      # SELECT * FROM users WHERE thirdparty_infos @> '{"identities": [{"uuid": "656ff884-99e8-4624-95d4-50d3952d2c38"}]}';
+      u = User.find_by("thirdparty_infos @> ?", { identities: [{ uuid: uuid }] }.to_json)
+
+      # for debugging
+      raise "User not found" if u.nil?
+      # return
+      u
     end
 end
+
+
+# Current
+# class User < ActiveRecord::Base
+#   def self.find_by_uuid(uuid)
+#       self.where("EXISTS (
+#           SELECT 1
+#           FROM jsonb_array_elements(thirdparty_infos->'identities') as identity
+#           WHERE identity->>'uuid' = ?
+#         )", uuid).take
+#   end
+# end
+
 
 # Alternative 1
 # class User < ActiveRecord::Base
