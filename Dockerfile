@@ -6,6 +6,4 @@ COPY . .
 
 RUN bundle install
 
-RUN chmod +x /app/seed.sh
-
-ENTRYPOINT ["sh", "/app/seed.sh"]
+ENTRYPOINT ["sh", "shared/entrypoint.sh"]

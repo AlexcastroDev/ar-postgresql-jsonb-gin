@@ -5,7 +5,14 @@ require 'pg'
 
 class ThirdParty
   def self.get_infos
-    { name: Faker::Name.name, identities: rand(1..4).times.map { { email: Faker::Internet.email, uuid: Faker::Internet.uuid } } }
+    { name: Faker::Name.name, identities: {
+      Faker::Internet.uuid => {
+        email: Faker::Internet.email
+      },
+      Faker::Internet.uuid => {
+        email: Faker::Internet.email
+      },
+    }}
   end
 end
 
@@ -19,8 +26,8 @@ task :migrate do
       t.jsonb :thirdparty_infos, default: {}, null: false
     end
     
-    # CREATE INDEX idx_thirdparty_infos_users_uuids ON users USING GIN ((thirdparty_infos->'users_uuids') jsonb_path_ops);
-    add_index :users, "((thirdparty_infos->'user_uuids')) jsonb_path_ops", using: :gin, name: "idx_thirdparty_infos_users_uuids"        
+    # CREATE INDEX idx_users_identities_keys ON users USING gin ((thirdparty_infos->'identities'));
+    add_index :users, "((thirdparty_infos->'identities'))", using: :gin
   end
 end
 
@@ -45,7 +52,16 @@ task :import_csv do
 
   # Inject custom UUID
   random_index = rand(users.length)
-  custom_infos = { name: Faker::Name.name, identities: [ { email: "does not matter", uuid: "itachiuchihadekonoha" }, { email: "does not matter", uuid: "notmatter" } ] }
+  custom_infos = { name: Faker::Name.name, identities: {
+      "itachiuchihadekonoha": {
+        email: "does not matter"
+      },
+      "notmatter": {
+        email: "does not matter"
+      }
+    }
+  }
+  
   user = User.find(random_index)
   user.update(thirdparty_infos: custom_infos, full_name: "renegado")
   

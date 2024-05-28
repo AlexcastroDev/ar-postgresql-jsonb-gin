@@ -12,9 +12,7 @@ services:
       timeout: 5s
       retries: 5
     ports:
-      - "5432:5432"
-    networks:
-      - lekito
+      - "5433:5432"
   test:
     build: .
     volumes:
@@ -25,11 +23,18 @@ services:
     environment:
       DB_HOST: "database"
       DB_NAME: "test"
-    networks:
-      - lekito
     working_dir: /app
-    command: ./seed.sh
-
-networks:
-  lekito:
-    driver: bridge
+    command: ./shared/seed.sh
+  test-nodes:
+    build: .
+    volumes:
+      - ./using_nodes:/app
+      - ./shared:/app/shared
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: "database"
+      DB_NAME: "test"
+    working_dir: /app
+    command: ./shared/seed.sh

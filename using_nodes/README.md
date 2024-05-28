@@ -4,41 +4,6 @@
 
 This summary presents the performance benchmarks for finding entries by UUID under three different scenarios
 
-
-## Update
-
-After discussing the changes, I modified the implementation to produce a smaller object, now using UUIDs as keys.
-
-| Test Scenario           | Warming Up Rate (i/100ms) | Average Rate (i/s) | Variation (%) | Total Executions | Time (s)    |
-|-------------------------|---------------------------|---------------------|---------------|------------------|-------------|
-| Perform 100 entries     | 478                       | 4.325k              | 19.1          | 21.032k          | 5.113760    |
-| Perform 50,000 entries  | 20                        | 189.442             | 14.8          | 920.000          | 5.035987    |
-
-
-### Perform 100 entries
-
-```bash
-test-nodes-1  | Running Ruby application...
-test-nodes-1  | ruby 3.3.1 (2024-04-23 revision c56cd86388) [aarch64-linux]
-test-nodes-1  | Warming up --------------------------------------
-test-nodes-1  |         find_by_uuid   478.000 i/100ms
-test-nodes-1  | Calculating -------------------------------------
-test-nodes-1  |         find_by_uuid      4.325k (±19.1%) i/s -     21.032k in   5.113760s
-```
-
-### Perform 50.000 entries
-
-```bash
-test-nodes-1  | Running Ruby application...
-test-nodes-1  | ruby 3.3.1 (2024-04-23 revision c56cd86388) [aarch64-linux]
-test-nodes-1  | Warming up --------------------------------------
-test-nodes-1  |         find_by_uuid    20.000 i/100ms
-test-nodes-1  | Calculating -------------------------------------
-test-nodes-1  |         find_by_uuid    189.442 (±14.8%) i/s -    920.000 in   5.035987s
-```
-
---------------
-
 For my use case, the better one was:
 
 | Operation           | Iterations/100ms | Calculations/sec (i/s) | Total in 5s    |

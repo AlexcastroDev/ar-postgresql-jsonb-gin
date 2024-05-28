@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Exit immediately if a command exits with a non-zero status.
-set -e
+# Navigate to the application directory
+cd /app
 
 # Run the migration task
 echo "Running migrate task..."
@@ -13,4 +13,4 @@ bundle exec rake import_csv
 
 # Run the Ruby application
 echo "Running Ruby application..."
-ruby app.rb
+ruby ./app.rb
